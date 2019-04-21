@@ -5,8 +5,8 @@
 using namespace std;
 #include "glut.h"
 #include "maze.h"
-//#include "graphics.h"
 
+//extern viewtype current_view;
 void DrawLine(double x1, double y1, double x2, double y2)
 {
 	glBegin(GL_LINES);
@@ -63,71 +63,127 @@ void Cell::SetLeft(bool state)
 	this->mLeft = state;
 }
 
-void Cell::Draw(int i, int j)
+void Cell::Draw(int i, int j, double texfile1, double texfile2, double texfile3, double texfile4)
 {
+	int x = i;
+	int y = j;
 
-	if (mBottom)
-	{
-		if (j==0){
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, texname);
-			unsigned char red = (unsigned) ((i*2365+j*1674)%256);
-			unsigned char green = (unsigned) ((i*3123+j*3721)%256);
-			unsigned char blue = (unsigned) ((i*4506+j*6534)%256);
-			glColor3ub(red, green, blue);
-			glBegin(GL_QUADS);
-			glVertex3d(i,j,0);
-			glVertex3d(i+1,j,0);
-			glVertex3d(i+1,j,1);
-			glVertex3d(i,j,1);
-			glEnd();
-			DrawLine(i,j, i+1,j);
-		}
-	}
+	/*glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texfile1);
+	static double h = 0.0;
+	glBegin(GL_QUADS);
+	glTexCoord2d(0, h); glVertex3d(-M, -N, 2);
+	glTexCoord2d(M / (M - 2), h); glVertex3d(M*1.5, -N, 2);
+	glTexCoord2d(M / (M - 2), h + N / (N - 2)); glVertex3d(M*1.5, N*1.5, 2);
+	glTexCoord2d(0, h + N / (N - 2)); glVertex3d(-M, N*1.5, 2);
+	glEnd();
+	h += .00000007;
+	glDisable(GL_TEXTURE_2D);
+
+
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texfile1);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex3d(0, 0, 0);
+	glTexCoord2f(M, 0); glVertex3d(0, N, 0);
+	glTexCoord2f(M, N); glVertex3d(M, N, 0);
+	glTexCoord2f(0, N); glVertex3d(M, 0, 0);
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	*/
+
+	
 	if (mTop)
 	{
-		unsigned char red = (unsigned) ((i*3645+j*1674)%256);
-		unsigned char green = (unsigned) ((i*2451+j*6514)%256);
-		unsigned char blue = (unsigned) ((i*21321+j*65555)%256);
-		glColor3ub(red, green, blue);
-		glBegin(GL_QUADS);
-		glVertex3d(i,j+1,0);
-		glVertex3d(i+1,j+1,0);
-		glVertex3d(i+1,j+1,1);
-		glVertex3d(i,j+1,1);
-		glEnd();
-		DrawLine(i,j+1, i+1,j+1);
+
+		DrawLine(i, j + 1, i + 1, j + 1);
+
+		if (i % 2 == 0) {
+			
+			/*topleft->right->bot->left*/
+
+			/*
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, texfile4);
+			glBegin(GL_QUADS);
+			glTexCoord2d(0, 0); glVertex3f(x, y + 0.5, 0);
+			glTexCoord2d(1, 0); glVertex3f(x +0.5, y + 0.5, 0);
+			glTexCoord2d(1, 1); glVertex3f(x + 0.5, y +0.5, 1);
+			glTexCoord2d(0, 1); glVertex3f(x, y + 0.5, 1);
+			glEnd();
+			glDisable(GL_TEXTURE_2D);
+			*/
+			
+		}
+		
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, texfile1);
+			glBegin(GL_QUADS);
+			glTexCoord2d(0, 0); glVertex3f(x, y + 1, 0);
+			glTexCoord2d(1, 0); glVertex3f(x + 1, y + 1, 0);
+			glTexCoord2d(1, 1); glVertex3f(x + 1, y + 1, 1);
+			glTexCoord2d(0, 1); glVertex3f(x, y + 1, 1);
+			glEnd();
+			glDisable(GL_TEXTURE_2D);
+		
+
 	}
 	if (mLeft)
 	{
-		if (i==0){
-			unsigned char red = (unsigned) ((i*7899+j*9887)%256);
-			unsigned char green = (unsigned) ((i*8776+j*1452)%256);
-			unsigned char blue = (unsigned) ((i*25008+j*81152)%256);
-			glColor3ub(red, green, blue);
-			glBegin(GL_QUADS);
-			glVertex3d(i,j,0);
-			glVertex3d(i,j+1,0);
-			glVertex3d(i,j+1,1);
-			glVertex3d(i,j,1);
-			glEnd();
-			DrawLine(i,j, i,j+1);
-		}
+
+		DrawLine(i, j, i, j + 1);
+
+
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texfile3);
+		glBegin(GL_QUADS);
+		glTexCoord2d(0, 0); glVertex3f(x, y, 0);
+		glTexCoord2d(1, 0); glVertex3f(x, y + 1, 0);
+		glTexCoord2d(1, 1); glVertex3f(x, y + 1, 1);
+		glTexCoord2d(0, 1); glVertex3f(x, y, 1);
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
+
+
 	}
 	if (mRight)
 	{
-		unsigned char red = (unsigned) ((i*11271+j*32230)%256);
-		unsigned char green = (unsigned) ((i*4628+j*56143)%256);
-		unsigned char blue = (unsigned) ((i*56446+j*223438)%256);
-		glColor3ub(red, green, blue);
+
+		DrawLine(i + 1, j, i + 1, j + 1);
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texfile4);
 		glBegin(GL_QUADS);
-		glVertex3d(i+1,j,0);
-		glVertex3d(i+1,j+1,0);
-		glVertex3d(i+1,j+1,1);
-		glVertex3d(i+1,j,1);
+		glTexCoord2d(0, 0); glVertex3f(x + 1, y, 0);
+		glTexCoord2d(1, 0); glVertex3f(x + 1, y + 1, 0);
+		glTexCoord2d(1, 1); glVertex3f(x + 1, y + 1, 1);
+		glTexCoord2d(0, 1); glVertex3f(x + 1, y, 1);
 		glEnd();
-		DrawLine(i+1,j, i+1,j+1);
+		glDisable(GL_TEXTURE_2D);
+
+
 	}
+	
+	if (mBottom)
+	{
+
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, texfile1);
+			glBegin(GL_QUADS);
+			glTexCoord2d(0, 0); glVertex3d(i, j, 0);
+			glTexCoord2d(1, 0); glVertex3d(i + 1, j, 0);
+			glTexCoord2d(1, 1); glVertex3d(i + 1, j, 1);
+			glTexCoord2d(0, 1); glVertex3d(i, j, 1);
+			
+
+			glEnd();
+			glDisable(GL_TEXTURE_2D);
+
+			DrawLine(i,j, i+1,j);
+		
+	}
+
+
 }
 
 void Cell::SetVisited(bool state)
@@ -219,6 +275,42 @@ bool Maze::isValid(int i_in, int j_in)
 	return true;
 }
 
+void Maze::Drawfloor(double texname)
+{
+	//glColor3d(.1, .5, .3);
+	
+	
+	for (int i = 1; i <= M; i++) {
+		for (int j = 1; j <= N; j++) {
+
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, texname);
+			glBegin(GL_QUADS);
+			/*topleft->right->bot->left*/
+			glTexCoord2f(0, 0); glVertex3d(i-1, j-1, 0);
+			glTexCoord2f(1, 0); glVertex3d(i-1, j, 0);
+			glTexCoord2f(1, 1); glVertex3d(i, j, 0);
+			glTexCoord2f(0, 1); glVertex3d(i, j-1, 0);
+			glEnd();
+			glDisable(GL_TEXTURE_2D);
+		}
+	}
+	
+	/*
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texname);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex3d(0, 0, 0);
+	glTexCoord2f(1, 0); glVertex3d(0, N, 0);
+	glTexCoord2f(1, 1); glVertex3d(M, N, 0);
+	glTexCoord2f(0, 1); glVertex3d(M, 0, 0);
+	//cout << "printing floor" << endl;
+	glDisable(GL_TEXTURE_2D);
+	*/
+
+
+	//glEnd();
+}
 void Maze::RemoveWallsR(int i, int j)
 {
 	this->mCells[i][j].SetVisited(true);
@@ -331,21 +423,13 @@ void Maze::removeLeftWall(double x_in, double y_in, bool bool_in)
 	this->mCells[tempx-1][tempy].SetRight(bool_in);
 }
 
-void Maze::Draw()
+void Maze::Draw(double texfile1, double texfile2, double texfile3, double texfile4)
 {
-	for(int i=0; i<M; i++)
-		for(int j=0; j<N; j++)
-			mCells[i][j].Draw(i,j);
-	//if(current_view == top_view) 
-	//{
-	// draw walls as GL_LINES
-	//}
-	//else
-	//{
-	// draw walls as GL_QUADS
-	// figure out a way to draw each wall in a different color. (you don't have to save the color of the wall)
-	// figure out a way to prevent two co-planar wall from 'bleeding' on top of each other when drawing.
-	//}
+	for (int i = 0; i < M; i++)
+		for (int j = 0; j < N; j++)
+			/**/
+			mCells[i][j].Draw(i, j, texfile1, texfile2, texfile3, texfile4);
+
 }
 
 

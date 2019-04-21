@@ -13,6 +13,8 @@ using namespace std;
 #include <ctime>
 #include "rat.h"
 #include "maze.h"
+enum viewtype { top_view, perspective_view, rat_view };
+viewtype current_view = perspective_view;
 
 // Global Variables (Only what you need!)
 double screen_x = 700;
@@ -20,8 +22,8 @@ double screen_y = 500;
 bool gMouseLeft = false;
 bool gMouseMiddle = false;
 bool gMouseRight = false;
-enum viewtype { top_view, perspective_view, rat_view };
-viewtype current_view = perspective_view;
+
+
 int mstart;
 int mendx;
 int mendy;
@@ -35,7 +37,7 @@ Maze gMaze;
 Rat mRat;
 
 // Textures
-const int num_textures = 4;
+const int num_textures = 5;
 static GLuint texName[num_textures];
 /*Helper Functions*/
 
@@ -230,9 +232,12 @@ void DrawText(double x, double y, char *string)
 void display(void)
 {
 	//glClear(GL_COLOR_BUFFER_BIT);
+	//glMatrixMode(GL_PROJECTION);
+	//glLoadIdentity();
+	//glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor3d(0,0,0); //forground color
-
+	glEnable(GL_DEPTH_TEST);
 	double eye[3] = { -3, -3, 7 }; // pick a nice vantage point.
 	double at[3] = { 3, 3, 0 };
 
@@ -242,6 +247,7 @@ void display(void)
 		glEnable(GL_DEPTH_TEST);
 		glLoadIdentity();
 		gluLookAt(eye[0], eye[1], eye[2], at[0], at[1], at[2], 0, 0, 1); // Z is up!
+		
 	}
 	else if (current_view == top_view)
 	{
@@ -275,25 +281,18 @@ void display(void)
 		mRat.move();
 	}
 
-	gMaze.Draw();
+	/*draw top, bot, left right*/
+	gMaze.Draw(texName[1], texName[1], texName[2], texName[3]);
 
 	mRat.Draw();
 
 	// Draw quads with texture
-	glEnable(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, texName[0]);
-
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0); glVertex2d(0,0);
-	glTexCoord2f(1,0); glVertex2d(10,0);
-	glTexCoord2f(1,1); glVertex2d(10,6);
-	glTexCoord2f(0,1); glVertex2d(0,6);
-	glEnd();
-
+	
+	gMaze.Drawfloor(texName[4]);
 	glDisable(GL_TEXTURE_2D);
 
 	glutSwapBuffers();
+	//glutPostRedisplay();
 }
 
 
@@ -420,10 +419,11 @@ void InitializeMyStuff()
 
 	gliGenericImage *image[num_textures];
 	int n=0;
-	image[n++] = readImage("fruit.tga");
-	image[n++] = readImage("sky.tga");
-	image[n++] = readImage("cookies.tga");
-	image[n++] = readImage("Seattle.tga");
+	image[n++] = readImage("wall_front.tga");
+	image[n++] = readImage("wall_bot.tga");
+	image[n++] = readImage("wall_left.tga");
+	image[n++] = readImage("wall_right.tga");//clamp
+	image[n++] = readImage("floor1.tga");
 	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	if(n!=num_textures)
 	{
@@ -440,6 +440,9 @@ void InitializeMyStuff()
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 		int repeats = false;
 		int needs_border = false; // Needed if clamping and not filling the whole polygon.
+		if (i == 1) {
+			needs_border = true;
+		}
 		if(repeats)
 		{
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -454,6 +457,9 @@ void InitializeMyStuff()
 		{
 			// set a border.
 			SetBorder(image[i]);
+
+
+			/**/
 		}
 
 		bool mipmaps = false;
@@ -484,7 +490,10 @@ void InitializeMyStuff()
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
+		
 	}
+
+
 }
 
 
